@@ -26,12 +26,18 @@ const styles = StyleSheet.create({
   cardContainer: {
     gap: 5,
     flexDirection: 'column',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
+    backgroundColor: '#FFF',
+    width: 180,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 15
   },
   poster: {
     width: 130,
-    height: 200,
+    height: 180,
     borderRadius: 10,
+    alignSelf: 'center'
   },
   title: {
     width: 120,
@@ -39,7 +45,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     color: '#000',
-    fontWeight: '600'
+    fontWeight: '600',
+    alignSelf: 'center'
   },
   activeStatus: {
     backgroundColor: '#00A86B',
@@ -61,10 +68,10 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 10,
     width: 120,
     marginTop: 5,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignSelf: 'center'
   },
   btnContainer: {
     backgroundColor: '#000',
