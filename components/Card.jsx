@@ -1,38 +1,84 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet, Image, Text, Pressable } from 'react-native';
 
-const Card = ({ image, title, seasons, currentSeason, currentChapter, status }) => {
+const Card = ({ poster, title, status, season, chapter }) => {
   return (
-    <View style={styles.container}>
+    <View style={styles.cardContainer}>
       <Image
-        source={{ uri: image }}
-        style={{ width: 150, height: 200, borderRadius: 5 }}
+        source={{ uri: "https://via.placeholder.com/600/771796" }}
+        style={styles.poster}
       />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={status === "Activo" ? styles.activeStatus : styles.inactiveSatus}>{status}</Text>
-      <Text>Temporada: {currentSeason}</Text>
-      <Text>Capitulo: {currentChapter}</Text>
+      <Text style={styles.title}>The Walking Dead</Text>
+      <Text style={status === "Activo" ? styles.activeStatus : styles.inactiveStatus}>{ status }</Text>
+      <View style={styles.buttonsContainer}>
+        <Pressable style={styles.btnContainer}>
+          <Text style={styles.btn}>T 1</Text>
+        </Pressable>
+        <Pressable style={styles.btnContainer}>
+          <Text style={styles.btn}>C 1</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-
+  cardContainer: {
+    gap: 5,
+    flexDirection: 'column',
+    alignItems: 'flex-start'
+  },
+  poster: {
+    width: 130,
+    height: 200,
+    borderRadius: 10,
   },
   title: {
-    color: 'black',
-    fontSize: 14,
-    fontWeight: 'bold',
-    width: 140, 
-    textAlign: 'center'
+    width: 120,
+    textAlign: 'center',
+    fontSize: 16,
+    lineHeight: 22,
+    color: '#000',
+    fontWeight: '600'
   },
   activeStatus: {
-
+    backgroundColor: '#00A86B',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    color: '#FFF',
+    fontSize: 16,
+    textAlign: 'left'
   },
-  inactiveSatus: {
-
-  }
+  inactiveStatus: {
+    backgroundColor: '#FD3C4A',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    color: '#FFF',
+    fontSize: 16,
+    textAlign: 'left'
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    width: 120,
+    marginTop: 5,
+    justifyContent: 'space-between'
+  },
+  btnContainer: {
+    backgroundColor: '#000',
+    width: 40,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10
+  },
+  btn: {
+    color: '#FFF',
+    fontSize: 15,
+  fontWeight: '600'
+  },
 })
 
 export default Card;
