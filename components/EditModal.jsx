@@ -1,21 +1,49 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, TextInput, Image, Pressable, Button } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Text, TextInput, Image, Pressable, Button, ActivityIndicator } from 'react-native';
 import Modal from "react-native-modal";
 import ArrowLeft from '../assets/arrow-left.png'
 import ArrowRight from '../assets/arrow-right.png'
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EditModal = ({ isVisible, closeEditModal }) => {
   const [status, setStatus] = useState("");
   const [season, setSeason] = useState("1");
   const [chapter, setChapter] = useState("1");
+  const [serie, setSerie] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const getSerie = async () => {
+      try {
+        const serieSerialized = await AsyncStorage.getItem("serie");
+        const serieParsed = JSON.parse(serieSerialized);
+        console.log(serieParsed)
+        setSerie(serieParsed);
+        setSeason(serieParsed?.season.toString());
+        setChapter(serieParsed?.chapter.toString());
+      } catch(err) {
+        console.log(err);
+      }
+    }
+
+    getSerie();
+  }, [])
 
   const editSerie = async (id) => {
     try {
-      console.log({ status: status, season: parseInt(season), chapter: parseInt(chapter) })
+      setLoading(true)
+      await axios.put(`https://series-tracker.onrender.com/series/${id}/edit`, {
+        status: status,
+        season: parseInt(season),
+        chapter: parseInt(chapter),
+      });
+      closeEditModal();
+      setLoading(false)
       setStatus("");
       setSeason("1");
       setChapter("1");
-      closeEditModal();
+      console.log("Edited")
     } catch(err) {
       console.log(err);
     }
@@ -23,6 +51,7 @@ const EditModal = ({ isVisible, closeEditModal }) => {
 
   const deleteSerie = async (id) => {
     try {
+      await axios.delete(`https://series-tracker.onrender.com/series/${id}/delete`);
       console.log("Deleted")
     } catch(err) {
       console.log(err);
@@ -33,6 +62,7 @@ const EditModal = ({ isVisible, closeEditModal }) => {
     <View>
       <Modal isVisible={isVisible} animationIn="zoomIn" animationOut="zoomOut" style={{ alignSelf: 'center' }}>
         <View style={styles.container}>
+          <Text>Editar {serie.title}</Text>
           <Text style={styles.title}>Estado</Text>
           <TextInput
             placeholder="Elegi entre 'Activo' o 'Finalizado'"
@@ -71,7 +101,9 @@ const EditModal = ({ isVisible, closeEditModal }) => {
               <Image source={ArrowRight} style={styles.arrowRight} />
             </Pressable>
           </View>
-        <Button title='Editar' onPress={editSerie} />
+        <Pressable style={{ backgroundColor: 'green', paddingVertical: 10 }} onPress={() => editSerie(serie.id)} >
+          <Text style={{ textAlign: 'center', color: 'white', fontSize: 16 }}>{loading ? (<ActivityIndicator size="small" color="black" />) : 'Editar'}</Text>
+        </Pressable>
         <Button title='Eliminar' onPress={deleteSerie} color="#FD3C4A" />
         <Button title='Cancelar' onPress={closeEditModal} />
         </View>

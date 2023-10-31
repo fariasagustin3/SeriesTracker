@@ -5,17 +5,17 @@ const Card = ({ poster, title, status, season, chapter }) => {
   return (
     <View style={styles.cardContainer}>
       <Image
-        source={{ uri: "https://via.placeholder.com/600/771796" }}
+        source={{ uri: poster }}
         style={styles.poster}
       />
-      <Text style={styles.title}>The Walking Dead</Text>
-      <Text style={status === "Activo" ? styles.activeStatus : styles.inactiveStatus}>{ status }</Text>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={status === "Activo" ? styles.activeStatus : styles.inactiveStatus}>{status}</Text>
       <View style={styles.buttonsContainer}>
         <Pressable style={styles.btnContainer}>
-          <Text style={styles.btn}>T 1</Text>
+          <Text style={styles.btn}>T {season}</Text>
         </Pressable>
         <Pressable style={styles.btnContainer}>
-          <Text style={styles.btn}>C 1</Text>
+          <Text style={styles.btn}>C {chapter}</Text>
         </Pressable>
       </View>
     </View>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   btn: {
     color: '#FFF',
     fontSize: 15,
-  fontWeight: '600'
+    fontWeight: '600'
   },
 })
 

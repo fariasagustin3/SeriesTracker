@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TextInput, Image, Pressable, Button } from 'react-native';
+import { View, StyleSheet, Text, TextInput, Image, Pressable, Button, ActivityIndicator } from 'react-native';
 import Modal from "react-native-modal";
 import ArrowLeft from '../assets/arrow-left.png'
 import ArrowRight from '../assets/arrow-right.png'
+import axios from 'axios';
 
 const AddModal = ({ isVisible, closeAddModal }) => {
   const [status, setStatus] = useState("");
@@ -10,16 +11,18 @@ const AddModal = ({ isVisible, closeAddModal }) => {
   const [chapter, setChapter] = useState("1");
   const [title, setTitle] = useState("");
   const [poster, setPoster] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const addSerie = async (id) => {
     try {
-      console.log({
+      const res = await axios.post(`https://series-tracker.onrender.com/series/create`, {
         status: status,
         season: parseInt(season),
         chapter: parseInt(chapter),
         title: title,
         poster: poster,
-      })
+      });
+      console.log("Created")
       setStatus("");
       setSeason("1");
       setChapter("1");
@@ -30,14 +33,6 @@ const AddModal = ({ isVisible, closeAddModal }) => {
       console.log(err);
     }
   };
-
-  const deleteSerie = async (id) => {
-    try {
-      console.log("Deleted")
-    } catch(err) {
-      console.log(err);
-    }
-  }
 
   return (
     <View>
@@ -95,8 +90,9 @@ const AddModal = ({ isVisible, closeAddModal }) => {
               <Image source={ArrowRight} style={styles.arrowRight} />
             </Pressable>
           </View>
-        <Button title='Añadir' onPress={addSerie} />
-        <Button title='Eliminar' onPress={deleteSerie} color="#FD3C4A" />
+          <Pressable style={{ backgroundColor: 'green', paddingVertical: 10 }} onPress={addSerie} >
+          <Text style={{ textAlign: 'center', color: 'white', fontSize: 16 }}>{loading ? (<ActivityIndicator size="small" color="black" />) : 'Añadir'}</Text>
+        </Pressable>
         <Button title='Cancelar' onPress={closeAddModal} />
         </View>
       </Modal>

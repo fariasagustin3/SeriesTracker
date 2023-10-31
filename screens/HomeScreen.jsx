@@ -1,9 +1,21 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, ScrollView, Pressable, Image, Button } from 'react-native';
 import Card from '../components/Card';
 import EditModal from '../components/EditModal';
 import AddModal from '../components/AddModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const getSerie = async(id, setSerie) => {
+  try {
+    const res = await axios.get(`https://series-tracker.onrender.com/series/${id}/serie`);
+    const serieData = JSON.stringify(res.data);
+    await AsyncStorage.setItem("serie", serieData);
+    return res.data;
+  } catch(err) {
+    console.log(err);
+  }
+}
 
 const HomeScreen = () => {
   const [activeSeries, setActiveSeries] = useState([]);
@@ -11,31 +23,33 @@ const HomeScreen = () => {
   const [addSerieModal, setAddSerieModal] = useState(false);
   const [editSerieModal, setEditSerieModal] = useState(false);
 
-  // useEffect(() => {
-  //   const getActiveSeries = async() => {
-  //     try {
-  //       const res = await axios.get('https://series-tracker.onrender.com/series/active/list');
-  //       setActiveSeries(res.data);
-  //     } catch(err) {
-  //       console.log(err);
-  //     }
-  //   };
+  useEffect(() => {
+    const getActiveSeries = async () => {
+      try {
+        const res = await axios.get('https://series-tracker.onrender.com/series/active/list');
+        setActiveSeries(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-  //   const getInactiveSeries = async () => {
-  //     try {
-  //       const res = await axios.get("https://series-tracker.onrender.com/series/inactive/list");
-  //       setInactiveSeries(res.data);
-  //     } catch(err) {
-  //       console.log(err);
-  //     }
-  //   };
+    const getInactiveSeries = async () => {
+      try {
+        const res = await axios.get("https://series-tracker.onrender.com/series/inactive/list");
+        setInactiveSeries(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-  //   getActiveSeries();
-  //   getInactiveSeries();
-  // })
+    getActiveSeries();
+    getInactiveSeries();
+  }, [activeSeries, inactiveSeries])
+
 
   const handleEditModal = (id) => {
     setEditSerieModal(true);
+    getSerie(id)
   }
 
   const closeEditModal = () => {
@@ -52,42 +66,38 @@ const HomeScreen = () => {
         <Text style={styles.activeSeriesTitle}>Siguiendo</Text>
         <ScrollView horizontal>
           <View style={styles.activeSeriesContainer}>
-            <Pressable onPress={() => handleEditModal(1)}>
-              <Card status="Activo" />
-            </Pressable>
-            <Pressable onPress={() => handleEditModal(2)}>
-              <Card status="Activo" />
-            </Pressable>
-            <Pressable onPress={() => handleEditModal(3)}>
-              <Card status="Activo" />
-            </Pressable>
-            <Pressable onPress={() => handleEditModal(4)}>
-              <Card status="Activo" />
-            </Pressable>
-            <Pressable onPress={() => handleEditModal(5)}>
-              <Card status="Activo" />
-            </Pressable>
+            {activeSeries ? activeSeries.map((serie) => (
+              <Pressable key={serie.id} onPress={() => handleEditModal(serie.id)}>
+                <Card
+                  season={serie.season}
+                  chapter={serie.chapter}
+                  poster={serie.poster}
+                  title={serie.title}
+                  status={serie.status}
+                />
+              </Pressable>
+            )) : (
+              <Text>NO SERIES</Text>
+            )}
           </View>
         </ScrollView>
 
         <Text style={styles.activeSeriesTitle}>Finalizado</Text>
         <ScrollView horizontal>
           <View style={styles.activeSeriesContainer}>
-            <Pressable onPress={() => handleEditModal(1)}>
-              <Card status="Finalizado" />
-            </Pressable>
-            <Pressable onPress={() => handleEditModal(2)}>
-              <Card status="Finalizado" />
-            </Pressable>
-            <Pressable onPress={() => handleEditModal(3)}>
-              <Card status="Finalizado" />
-            </Pressable>
-            <Pressable onPress={() => handleEditModal(4)}>
-              <Card status="Finalizado" />
-            </Pressable>
-            <Pressable onPress={() => handleEditModal(5)}>
-              <Card status="Finalizado" />
-            </Pressable>
+            {inactiveSeries ? inactiveSeries.map((serie) => (
+              <Pressable key={serie.id} onPress={() => handleEditModal(serie.id)}>
+                <Card
+                  season={serie.season}
+                  chapter={serie.chapter}
+                  poster={serie.poster}
+                  title={serie.title}
+                  status={serie.status}
+                />
+              </Pressable>
+            )) : (
+              <Text>NO SERIES</Text>
+            )}
           </View>
         </ScrollView>
       </View>
